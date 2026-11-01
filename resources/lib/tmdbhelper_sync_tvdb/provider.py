@@ -6,7 +6,7 @@ from tmdbhelper_sync_tvdb.settings import TVDbSettings
 
 
 class Provider(SyncProvider):
-    interface_version = 3
+    interface_version = 4
     provider_id = 'tvdb'
     display_name = 'TVDb'
     directory_item_class = TVDbDirectoryItem
