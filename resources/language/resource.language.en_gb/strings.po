@@ -1,0 +1,16 @@
+msgid ""
+msgstr ""
+"Language: en_GB\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "#32000"
+msgid "TVDb API"
+msgstr ""
+
+msgctxt "#32001"
+msgid "API key"
+msgstr ""
+
+msgctxt "#32002"
+msgid "Optional personal API key. Leave empty to use the bundled TVDb key."
+msgstr ""
