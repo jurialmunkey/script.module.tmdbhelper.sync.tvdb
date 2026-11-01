@@ -81,9 +81,11 @@ class ListTVDbMediaProperties(ListTVDbProperties):
         return mapped_item.item if mapped_item.tmdb_id else None
 
     def get_tmdb_id(self, mapper):
+        from tmdbhelper.lib.query.database.database import FindQueriesDatabase
+        query_database = FindQueriesDatabase()
         params = {'tmdb_type': mapper.tmdb_type, 'query': mapper.title}
-        tmdb_id = self.query_database.get_tmdb_id(year=mapper.year, **params)
-        return tmdb_id or self.query_database.get_tmdb_id(**params)
+        tmdb_id = query_database.get_tmdb_id(year=mapper.year, **params)
+        return tmdb_id or query_database.get_tmdb_id(**params)
 
     def get_mapped_items(self, sorted_items):
         from tmdbhelper.lib.addon.thread import ParallelThread
