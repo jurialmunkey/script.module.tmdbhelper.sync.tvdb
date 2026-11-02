@@ -14,3 +14,7 @@ msgstr ""
 msgctxt "#32002"
 msgid "Optional personal API key. Leave empty to use the bundled TVDb key."
 msgstr ""
+
+msgctxt "#32460"
+msgid "Awards"
+msgstr ""

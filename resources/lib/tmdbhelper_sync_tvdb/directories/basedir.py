@@ -1,5 +1,7 @@
 from tmdbhelper_sync_tvdb.directories.item import TVDbDirItem
 from tmdbhelper_sync_tvdb.consts import TVDB_DISCLAIMER
+from tmdbhelper_sync_tvdb.localization import get_localized
+from jurialmunkey.ftools import cached_property
 
 
 class BaseDirItemTVDbAwards(TVDbDirItem):
@@ -10,6 +12,13 @@ class BaseDirItemTVDbAwards(TVDbDirItem):
     infolabels = {'plot': TVDB_DISCLAIMER}
     icon_name = 'awards'
     types = ('both', )
+
+    @cached_property
+    def label(self):
+        return self.get_label()
+
+    def get_label(self):
+        return get_localized(self.label_localized)
 
 
 class BaseDirItemTVDbGenres(TVDbDirItem):

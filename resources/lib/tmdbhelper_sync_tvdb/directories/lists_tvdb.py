@@ -1,5 +1,6 @@
 from tmdbhelper_sync_tvdb.directories.mapper_static import TVDbStaticItemMapper
 from tmdbhelper_sync_tvdb.directories.mapper_items import TVDbAwardItemMapper
+from tmdbhelper_sync_tvdb.localization import get_localized
 from tmdbhelper.lib.items.directories.lists_default import ListDefault, ListSliceProperties
 from tmdbhelper.lib.sync.providers.registry import SyncProviderRegistry
 from jurialmunkey.ftools import cached_property
@@ -10,6 +11,13 @@ class ListTVDbProperties(ListSliceProperties):
     unconfigured_item_data = None
     sorting_key = None
     sorting_rev = False
+
+    @cached_property
+    def localized(self):
+        return self.get_localized()
+
+    def get_localized(self):
+        return get_localized(self.localize) if self.localize else ''
 
     @cached_property
     def plugin_category(self):
