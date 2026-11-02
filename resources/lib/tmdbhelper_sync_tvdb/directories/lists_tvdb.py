@@ -1,6 +1,7 @@
 from tmdbhelper_sync_tvdb.directories.mapper_static import TVDbStaticItemMapper
 from tmdbhelper_sync_tvdb.directories.mapper_items import TVDbAwardItemMapper
-from tmdbhelper.lib.items.directories.lists_default import ListSliceProperties
+from tmdbhelper.lib.items.directories.lists_default import ListDefault, ListSliceProperties
+from tmdbhelper.lib.sync.providers.registry import SyncProviderRegistry
 from jurialmunkey.ftools import cached_property
 
 
@@ -12,6 +13,9 @@ class ListTVDbProperties(ListSliceProperties):
 
     @cached_property
     def plugin_category(self):
+        return self.get_plugin_category()
+
+    def get_plugin_category(self):
         plugin_category = self.request.get('name') if isinstance(self.request, dict) else None
         plugin_category = plugin_category or self.plugin_name.format(localized=self.localized, plural=self.plural)
         return plugin_category
@@ -46,8 +50,12 @@ class ListTVDbProperties(ListSliceProperties):
 
     @cached_property
     def sorted_items(self):
+        return self.get_sorted_items()
+
+    def get_sorted_items(self):
         sorted_items = self.filtered_items
-        sorted_items = sorted(sorted_items, key=self.sorting_key, reverse=self.sorting_rev) if self.sorting_key else sorted_items
+        if self.sorting_key:
+            sorted_items = sorted(sorted_items, key=self.sorting_key, reverse=self.sorting_rev)
         return sorted_items[self.item_a:self.item_z]
 
 
@@ -64,11 +72,6 @@ class ListTVDbMediaProperties(ListTVDbProperties):
         cache_name_list = sorted(cache_name_list)
         cache_name_list = [self.class_name, self.tmdb_type, self.url] + cache_name_list
         return '_'.join(map(str, cache_name_list))
-
-    @cached_property
-    def request(self):
-        request = self.tvdb_api.get_request_lc(self.url, **self.request_url_kwargs)
-        return request
 
     def get_uncached_items(self):
         return self.results or []
@@ -93,9 +96,20 @@ class ListTVDbMediaProperties(ListTVDbProperties):
             mapped_items = pt.queue
         return [i for i in mapped_items if i]
 
-    @cached_property
-    def sorted_items(self):
-        sorted_items = self.filtered_items
-        sorted_items = sorted(sorted_items, key=self.sorting_key, reverse=self.sorting_rev) if self.sorting_key else sorted_items
-        sorted_items = sorted_items[self.item_a:self.item_z]
-        return self.get_mapped_items(sorted_items)
+    def get_sorted_items(self):
+        return self.get_mapped_items(super().get_sorted_items())
+
+
+class ListTVDb(ListDefault):
+    list_properties_class = ListTVDbProperties
+
+    def configure_list_properties(self, list_properties):
+        list_properties = super().configure_list_properties(list_properties)
+        list_properties.plugin_name = '{localized}'
+        list_properties.tvdb_api = SyncProviderRegistry().get_provider('tvdb').api
+        list_properties.results_key = None
+        list_properties.page_length = 4
+        return list_properties
+
+    def get_items(self, tmdb_type=None, **kwargs):
+        return super().get_items(tmdb_type=tmdb_type, **kwargs)

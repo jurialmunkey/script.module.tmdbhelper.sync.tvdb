@@ -1,5 +1,4 @@
-from tmdbhelper_sync_tvdb.directories.lists_awards import ListAwards
-from tmdbhelper_sync_tvdb.directories.lists_tvdb import ListTVDbProperties, ListTVDbMediaProperties
+from tmdbhelper_sync_tvdb.directories.lists_tvdb import ListTVDb, ListTVDbProperties, ListTVDbMediaProperties
 from tmdbhelper_sync_tvdb.directories.mapper_static import TVDbStaticGenresItemMapper
 from tmdbhelper_sync_tvdb.directories.mapper_items import TVDbGenreItemMapper
 from tmdbhelper.lib.addon.plugin import get_setting
@@ -10,7 +9,7 @@ class ListTVDbGenresProperties(ListTVDbProperties):
     item_mapper_class = TVDbStaticGenresItemMapper
 
 
-class ListGenres(ListAwards):
+class ListGenres(ListTVDb):
 
     list_properties_class = ListTVDbGenresProperties
 
@@ -27,6 +26,9 @@ class ListTVDbMixedMediaProperties(ListTVDbMediaProperties):
 
     @cached_property
     def request(self):
+        return self.get_request()
+
+    def get_request(self):
         request = []
         if self.tmdb_type in ('movie', 'both'):
             request += self.tvdb_api.get_request_lc(self.url.format(tvdb_type='movies'), **self.request_url_kwargs)
@@ -35,7 +37,7 @@ class ListTVDbMixedMediaProperties(ListTVDbMediaProperties):
         return request
 
 
-class ListGenre(ListAwards):
+class ListGenre(ListTVDb):
 
     list_properties_class = ListTVDbMixedMediaProperties
 

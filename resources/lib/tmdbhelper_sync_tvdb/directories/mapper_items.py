@@ -12,6 +12,9 @@ class TVDbItemMapperBase(ItemMapper):
 
     @cached_property
     def metadata(self):
+        return self.get_metadata()
+
+    def get_metadata(self):
         if not self.meta_skey:
             return self.meta
         return self.meta[self.meta_skey]
@@ -38,6 +41,9 @@ class TVDbItemMapperBase(ItemMapper):
 
     @cached_property
     def icon(self):
+        return self.get_icon()
+
+    def get_icon(self):
         icon = self.metadata.get('image')
         icon = icon or f'{ADDONPATH}/resources/icons/tvdb/tvdb.png'
         return icon
@@ -97,6 +103,9 @@ class TVDbAwardItemMapperBase(TVDbItemMapperBase):
 
     @cached_property
     def plot_affix(self):
+        return self.get_plot_affix()
+
+    def get_plot_affix(self):
         if self.is_winner:
             return f'[B]Winner {self.award_year}[/B]: '
         return f'[B]Nominee {self.award_year}[/B]: '

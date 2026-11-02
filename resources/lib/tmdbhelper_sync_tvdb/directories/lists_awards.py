@@ -1,8 +1,8 @@
-from tmdbhelper_sync_tvdb.directories.mapper_static import TVDbStaticAwardsItemMapper, TVDbStaticAwardCategoriesItemMapper
-from tmdbhelper_sync_tvdb.directories.lists_tvdb import ListTVDbProperties, ListTVDbMediaProperties
-from tmdbhelper.lib.items.directories.lists_default import ListDefault
+from tmdbhelper_sync_tvdb.directories.mapper_static import (
+    TVDbStaticAwardsItemMapper, TVDbStaticAwardCategoriesItemMapper,
+)
+from tmdbhelper_sync_tvdb.directories.lists_tvdb import ListTVDb, ListTVDbProperties, ListTVDbMediaProperties
 from tmdbhelper.lib.addon.plugin import get_setting
-from tmdbhelper.lib.sync.providers.registry import SyncProviderRegistry
 from jurialmunkey.ftools import cached_property
 
 
@@ -14,21 +14,14 @@ class ListTVDbAwardCategoriesProperties(ListTVDbProperties):
     item_mapper_class = TVDbStaticAwardCategoriesItemMapper
 
 
-class ListAwards(ListDefault):
+class ListAwards(ListTVDb):
     list_properties_class = ListTVDbAwardsProperties
 
     def configure_list_properties(self, list_properties):
         list_properties = super().configure_list_properties(list_properties)
         list_properties.localize = 32460
-        list_properties.plugin_name = '{localized}'
-        list_properties.tvdb_api = SyncProviderRegistry().get_provider('tvdb').api
-        list_properties.results_key = None
         list_properties.request_url = 'awards'
-        list_properties.page_length = 4
         return list_properties
-
-    def get_items(self, tmdb_type=None, **kwargs):
-        return super().get_items(tmdb_type=tmdb_type, **kwargs)
 
 
 class ListAwardCategories(ListAwards):
